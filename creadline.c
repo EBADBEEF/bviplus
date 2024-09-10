@@ -145,10 +145,40 @@ char *creadline(const char *prompt, WINDOW *w, int y, int x, cmd_hist_t *history
         tmp_cmd.position--;
         tmp_cmd.count--;
         break;
+      case BVICTRL('u'):
+        /* delete all to the left */
+        memmove(tmp_cmd.cbuff, &tmp_cmd.cbuff[tmp_cmd.position], tmp_cmd.count - tmp_cmd.position);
+        tmp_cmd.count -= tmp_cmd.position;
+        tmp_cmd.position = 0;
+        /* clear and re-draw */
+        wmove(w, y, x+tmp_cmd.position+1);
+        wclrtoeol(w);
+        for (i=tmp_cmd.position; i<tmp_cmd.count; i++)
+          mvwaddch(w, y, x+i+1, tmp_cmd.cbuff[i]);
+        break;
+      case DEL:
+        /* delete one to the right */
+        if (tmp_cmd.position < tmp_cmd.count)
+        {
+            memmove(&tmp_cmd.cbuff[tmp_cmd.position], &tmp_cmd.cbuff[tmp_cmd.position+1], tmp_cmd.count - tmp_cmd.position - 1);
+            tmp_cmd.count -= 1;
+            wclrtoeol(w);
+            for (i=tmp_cmd.position; i<tmp_cmd.count; i++)
+              mvwaddch(w, y, x+i+1, tmp_cmd.cbuff[i]);
+        }
+        break;
+      case BVICTRL('a'):
+        tmp_cmd.position=0;
+        break;
+      case BVICTRL('b'):
       case KEY_LEFT:
         if (--tmp_cmd.position < 0)
           tmp_cmd.position++;
         break;
+      case BVICTRL('e'):
+        tmp_cmd.position=tmp_cmd.count;
+        break;
+      case BVICTRL('f'):
       case KEY_RIGHT:
         if (++tmp_cmd.position > tmp_cmd.count)
           tmp_cmd.position--;
