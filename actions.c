@@ -353,36 +353,27 @@ action_code_t action_cursor_move_file_end(cursor_t cursor)
   return error;
 }
 
-action_code_t action_cursor_move_page_down(cursor_t cursor)
+action_code_t action_cursor_move_half_page(cursor_t cursor, int count)
 {
   action_code_t error = E_SUCCESS;
   off_t a;
 
   a = display_info.cursor_addr;
-  a += BYTES_PER_LINE * HEX_LINES;
+  a += count * BYTES_PER_LINE * HEX_LINES / 2;
 
-  if (address_invalid(a))
-    a = (display_info.file_size - 1);
-
-  place_cursor(a, CALIGN_NONE, cursor);
-
-  return error;
-}
-action_code_t action_cursor_move_page_up(cursor_t cursor)
-{
-  action_code_t error = E_SUCCESS;
-  off_t a;
-
-  a = display_info.cursor_addr;
-  a -= BYTES_PER_LINE * HEX_LINES;
-
-  if (address_invalid(a))
-    a = 0;
+  if (address_invalid(a)) {
+    if (count > 0) {
+      a = (display_info.file_size - 1);
+    } else {
+      a = 0;
+    }
+  }
 
   place_cursor(a, CALIGN_NONE, cursor);
 
   return error;
 }
+
 action_code_t action_jump_to(off_t jump_addr, cursor_t cursor)
 {
   action_code_t error = E_SUCCESS;

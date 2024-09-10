@@ -850,13 +850,19 @@ off_t get_next_motion_addr(void)
       case KEY_HOME:
         action_cursor_move_line_start(CURSOR_VIRTUAL);
         return display_info.virtual_cursor_addr;
+      case BVICTRL('d'):
+        action_cursor_move_half_page(CURSOR_VIRTUAL, 1);
+        return display_info.virtual_cursor_addr;
+      case BVICTRL('u'):
+        action_cursor_move_half_page(CURSOR_VIRTUAL, -1);
+        return display_info.virtual_cursor_addr;
       case BVICTRL('f'):
       case KEY_NPAGE:
-        action_cursor_move_page_down(CURSOR_VIRTUAL);
+        action_cursor_move_half_page(CURSOR_VIRTUAL, 2);
         return display_info.virtual_cursor_addr;
       case BVICTRL('b'):
       case KEY_PPAGE:
-        action_cursor_move_page_up(CURSOR_VIRTUAL);
+        action_cursor_move_half_page(CURSOR_VIRTUAL, -2);
         return display_info.virtual_cursor_addr;
       case 'n':
         action_move_cursor_next_search(CURSOR_VIRTUAL, TRUE);
@@ -1756,13 +1762,19 @@ void handle_key(int c)
     case TAB:
       action_cursor_toggle_hex_ascii();
       break;
+    case BVICTRL('d'):
+      action_cursor_move_half_page(CURSOR_REAL, 1);
+      break;
+    case BVICTRL('u'):
+      action_cursor_move_half_page(CURSOR_REAL, -1);
+      break;
     case BVICTRL('f'):
     case KEY_NPAGE:
-      action_cursor_move_page_down(CURSOR_REAL);
+      action_cursor_move_half_page(CURSOR_REAL, 2);
       break;
     case BVICTRL('b'):
     case KEY_PPAGE:
-      action_cursor_move_page_up(CURSOR_REAL);
+      action_cursor_move_half_page(CURSOR_REAL, -2);
       break;
     case 'X':
       action_cursor_move_left(multiplier, CURSOR_REAL);
