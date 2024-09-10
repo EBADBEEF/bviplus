@@ -297,6 +297,7 @@ action_code_t cmd_parse(char *cbuff)
       return error;
     }
     if ((strncmp(tok, "next",     MAX_CMD_BUF) == 0) ||
+        (strncmp(tok, "tabn",     MAX_CMD_BUF) == 0) ||
         (strncmp(tok, "bn",       MAX_CMD_BUF) == 0))
     {
       action_load_next_file();
@@ -305,12 +306,14 @@ action_code_t cmd_parse(char *cbuff)
     if ((strncmp(tok, "prev",     MAX_CMD_BUF) == 0) ||
         (strncmp(tok, "previous", MAX_CMD_BUF) == 0) ||
         (strncmp(tok, "bp",       MAX_CMD_BUF) == 0) ||
+        (strncmp(tok, "tabp",     MAX_CMD_BUF) == 0) ||
         (strncmp(tok, "last",     MAX_CMD_BUF) == 0))
     {
       action_load_prev_file();
       return error;
     }
-    if (strncmp(tok, "e", MAX_CMD_BUF) == 0)
+    if ((strncmp(tok, "e",    MAX_CMD_BUF) == 0) ||
+        (strncmp(tok, "tabe", MAX_CMD_BUF) == 0))
     {
       tok = strtok(NULL, delimiters);
       if (tok == NULL)
