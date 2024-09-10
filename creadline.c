@@ -83,14 +83,14 @@ char *creadline(const char *prompt, WINDOW *w, int y, int x, cmd_hist_t *history
     {
       case KEY_UP:
         if (NULL == history)
-          break;
+          continue;
         tmp_hist_index = history->hist_index-1;
         if (tmp_hist_index < 0)
           tmp_hist_index = MAX_CMD_HISTORY - 1;
         if (tmp_hist_index == entry_hist_index)
-          break;
+          continue;
         if (history->item[tmp_hist_index].count == 0)
-          break;
+          continue;
 
         history->hist_index = tmp_hist_index;
 
@@ -104,13 +104,12 @@ char *creadline(const char *prompt, WINDOW *w, int y, int x, cmd_hist_t *history
         for (i=0; i<tmp_cmd.count; i++)
           mvwaddch(w, y, x+i+1, tmp_cmd.cbuff[i]);
         tmp_cmd.position = tmp_cmd.count;
-        wmove(w, y, x+tmp_cmd.position+1);
         break;
       case KEY_DOWN:
         if (NULL == history)
-          break;
+          continue;
         if (history->hist_index == entry_hist_index)
-          break;
+          continue;
         tmp_hist_index = history->hist_index+1;
         tmp_hist_index = tmp_hist_index % MAX_CMD_HISTORY;
 
@@ -126,7 +125,6 @@ char *creadline(const char *prompt, WINDOW *w, int y, int x, cmd_hist_t *history
         for (i=0; i<tmp_cmd.count; i++)
           mvwaddch(w, y, x+i+1, tmp_cmd.cbuff[i]);
         tmp_cmd.position = tmp_cmd.count;
-        wmove(w, y, x+tmp_cmd.position+1);
         break;
       case BVICTRL('c'):
       case ESC:
@@ -144,19 +142,16 @@ char *creadline(const char *prompt, WINDOW *w, int y, int x, cmd_hist_t *history
         }
         mvwaddch(w, y, x+tmp_cmd.count, ' ');
         wclrtoeol(w);
-        wmove(w, y, x+tmp_cmd.position);
         tmp_cmd.position--;
         tmp_cmd.count--;
         break;
       case KEY_LEFT:
         if (--tmp_cmd.position < 0)
           tmp_cmd.position++;
-        wmove(w, y, x+tmp_cmd.position+1);
         break;
       case KEY_RIGHT:
         if (++tmp_cmd.position > tmp_cmd.count)
           tmp_cmd.position--;
-        wmove(w, y, x+tmp_cmd.position+1);
         break;
       case NL:
       case CR:
@@ -164,7 +159,7 @@ char *creadline(const char *prompt, WINDOW *w, int y, int x, cmd_hist_t *history
         break;
       default:
         if (tmp_cmd.count >= MAX_CMD_BUF)
-          break;
+          continue;
         for (i=tmp_cmd.count; i>=tmp_cmd.position; i--)
           tmp_cmd.cbuff[i+1] = tmp_cmd.cbuff[i];
         tmp_cmd.cbuff[tmp_cmd.position] = (char)c;
@@ -172,9 +167,10 @@ char *creadline(const char *prompt, WINDOW *w, int y, int x, cmd_hist_t *history
         for (i=tmp_cmd.position; i<tmp_cmd.count; i++)
           mvwaddch(w, y, x+i+1, tmp_cmd.cbuff[i]);
         tmp_cmd.position++;
-        wmove(w, y, x+tmp_cmd.position+1);
         break;
     }
+
+    wmove(w, y, x+tmp_cmd.position+1);
   } while(c != NL && c != CR && c != KEY_ENTER);
 
   tmp_cmd.cbuff[tmp_cmd.count] = '\0';
