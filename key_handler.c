@@ -241,7 +241,7 @@ BOOL file_browser(const char *dir, char *fname, int name_len)
         {
           if (i == selection)
             wattron(fb, A_STANDOUT);
-          mvwprintw(fb, j, 1, eps[i]->d_name);
+          mvwprintw(fb, j, 1, "%s", eps[i]->d_name);
           wattroff(fb, A_STANDOUT);
         }
         j++;
@@ -447,7 +447,7 @@ action_code_t do_search(int c, cursor_t cursor)
     prompt[0] = c;
     prompt[1] = 0;
     werase(window_list[WINDOW_STATUS]);
-    mvwprintw(window_list[WINDOW_STATUS], 0, 0, prompt);
+    mvwprintw(window_list[WINDOW_STATUS], 0, 0, "%s", prompt);
     wrefresh(window_list[WINDOW_STATUS]);
     c = mgetch();
     while (c != '/' && c != '\\' && c != ESC)

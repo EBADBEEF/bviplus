@@ -68,7 +68,7 @@ char *creadline(const char *prompt, WINDOW *w, int y, int x, cmd_hist_t *history
   cmd_item_t tmp_cmd;
   char *cmd;
 
-  mvwprintw(w, y, x, prompt);
+  mvwprintw(w, y, x, "%s", prompt);
   x = x + strlen(prompt) - 1;
 
   entry_hist_index = history->hist_index;

@@ -56,6 +56,7 @@ endif
 
 EXTRA_CFLAGS += $(CFLAGS)
 EXTRA_CFLAGS += -Wall -D_FILE_OFFSET_BITS=64
+EXTRA_CFLAGS += -Wno-unused-result
 
 OBJDIR := objs
 BUILD_OBJS := $(addprefix $(OBJDIR)/,$(OBJS))
