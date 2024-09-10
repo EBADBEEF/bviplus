@@ -32,6 +32,8 @@
 #define ESC     27
 #define INS     331
 #define TAB     9
+#define DEL     330
+#define BACKSPACE 127
 #define BVICTRL(n)    (n&0x1f)
 
 typedef struct macro_record_s

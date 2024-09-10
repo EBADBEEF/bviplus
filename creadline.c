@@ -134,6 +134,7 @@ char *creadline(const char *prompt, WINDOW *w, int y, int x, cmd_hist_t *history
       case BVICTRL('?'):
       case BVICTRL('H'):
       case KEY_BACKSPACE:
+      case BACKSPACE:
         if (tmp_cmd.position == 0)
           return NULL;
         for (i=tmp_cmd.position; i<tmp_cmd.count; i++)

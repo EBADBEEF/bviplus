@@ -1051,6 +1051,7 @@ void do_insert(int count, int c)
     c2 = mgetch();
     switch (c2)
     {
+      case BACKSPACE:
       case KEY_BACKSPACE:
         low_tmp_char_count--;
         if (low_tmp_char_count < 0)
@@ -1466,6 +1467,7 @@ void do_overwrite(int count)
     c2 = mgetch();
     switch (c2)
     {
+      case BACKSPACE:
       case KEY_BACKSPACE:
         low_tmp_char_count--;
         if (low_tmp_char_count < 0)
@@ -1743,6 +1745,7 @@ void handle_key(int c)
       break;
     case 'h':
     case KEY_LEFT:
+    case BACKSPACE:
     case KEY_BACKSPACE:
       action_cursor_move_left(multiplier, CURSOR_REAL);
       break;
