@@ -35,6 +35,7 @@
 #include "actions.h"
 #include "app_state.h"
 #include "help.h"
+#include "virt_file.h"
 
 #define ALPHANUMERIC(x) ((x >= 'a' && x <= 'z') || (x >= 'A' && x <= 'Z') ||  (x >= '0' && x <= '9'))
 #define WHITESPACE(x) (x == ' ' || x == '\t' || !isprint(x)) /* includes all non-print chars */
@@ -322,21 +323,27 @@ action_code_t cmd_parse(char *cbuff)
       }
       else
       {
-        if (stat(tok, &stat_buf))
+        char expanded_path[MAX_PATH_LEN+1];
+        if (FALSE == vf_parse_path(expanded_path, tok))
         {
-          msg_box("Could not find %s", tok);
+          msg_box("Could not parse path %s", tok);
+          return error;
+        }
+        if (stat(expanded_path, &stat_buf))
+        {
+          msg_box("Could not find %s", expanded_path);
           return error;
         }
         if (S_ISDIR(stat_buf.st_mode))
         {
-          if (file_browser(tok, fname, MAX_FILE_NAME) != FALSE)
+          if (file_browser(expanded_path, fname, MAX_FILE_NAME) != FALSE)
             ftemp = fname;
           else
             return error;
         }
         else
         {
-          ftemp = tok;
+          ftemp = expanded_path;
         }
         current_file = vf_add_fm_to_ring(file_ring);
         if (vf_init(current_file, ftemp) == FALSE)
@@ -393,13 +400,22 @@ action_code_t cmd_parse(char *cbuff)
       action_quit_all(FALSE);
       return error;
     }
+    if (strncmp(tok, "saveas", MAX_CMD_BUF) == 0)
+    {
+      tok = strtok(NULL, delimiters);
+      if (tok == NULL)
+        error = E_NO_ACTION;
+      else
+        action_save_as(tok, TRUE);
+      return error;
+    }
     if (strncmp(tok, "w", MAX_CMD_BUF) == 0)
     {
       tok = strtok(NULL, delimiters);
       if (tok == NULL)
         action_save();
       else
-        action_save_as(tok);
+        action_save_as(tok, FALSE);
       return error;
     }
     if ((strncmp(tok, "wq", MAX_CMD_BUF) == 0) ||
@@ -409,7 +425,7 @@ action_code_t cmd_parse(char *cbuff)
       if (tok == NULL)
         action_save();
       else
-        action_save_as(tok);
+        action_save_as(tok, FALSE);
 
       action_quit(FALSE);
       return error;

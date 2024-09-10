@@ -34,17 +34,30 @@
 #include "virt_file.h"
 #include "vf_backend.h"
 
-
 /****************
   MACROS/DEFINES
  ***************/
 #define BUF_TOGGLE(x) (x ^ 1)
 #define MAX_SAVE_SHIFT (4 * 1024 * 1024) /* two megs (change save so that we can grow this dynamically if we need more? */
 
-
 /****************
     FUNCTIONS
  ***************/
+
+BOOL vf_parse_path(char *out, const char *in)
+{
+  if (in[0]=='~') {
+    const char *home = getenv("HOME");
+    if (NULL == home)
+      return FALSE;
+    snprintf(out, MAX_PATH_LEN - 1, "%s%s", home, &in[1]);
+  } else {
+    snprintf(out, MAX_PATH_LEN - 1, "%s", in);
+  }
+  out[MAX_PATH_LEN] = 0;
+  return TRUE;
+}
+
 vf_ring_t *vf_create_fm_ring(void)
 {
   vf_ring_t *tmp;
@@ -259,8 +272,8 @@ BOOL vf_init(file_manager_t * f, const char *file_name)
     (which reminds me, need to impliment saving to a new file name) */
   if (NULL != file_name)
   {
-    snprintf(f->fname, MAX_PATH_LEN - 1, "%s", file_name);
-    f->fname[MAX_PATH_LEN] = 0;
+    if (FALSE == vf_parse_path(f->fname, file_name))
+      return FALSE;
 
     f->fm.fp = fopen(f->fname, "a");
     if(NULL != f->fm.fp)
@@ -377,8 +390,8 @@ BOOL vf_create_file(file_manager_t * f, const char *file_name)
   if (NULL == file_name)
     return FALSE;
 
-  snprintf(f->fname, MAX_PATH_LEN - 1, "%s", file_name);
-  f->fname[MAX_PATH_LEN] = 0;
+  if (FALSE == vf_parse_path(f->fname, file_name))
+    return FALSE;
 
   f->fm.fp = fopen(f->fname, "r");
   if(NULL != f->fm.fp) /* file already exists */
@@ -400,10 +413,11 @@ BOOL vf_create_file(file_manager_t * f, const char *file_name)
 Call this before saving when you want to save an existing file to a
 new file.
   ---------------------------*/
-BOOL vf_copy_file(file_manager_t * f, const char *file_name)
+BOOL vf_copy_file(file_manager_t * f, const char *file_name, BOOL keep_newname)
 {
   FILE *out;
   char c;
+  char expanded_path[MAX_PATH_LEN+1];
 
   if (f == NULL)
     return FALSE;
@@ -414,7 +428,10 @@ BOOL vf_copy_file(file_manager_t * f, const char *file_name)
   if (f->fm.fp == NULL)
     return FALSE;
 
-  out = fopen(file_name, "w+");
+  if (FALSE == vf_parse_path(expanded_path, file_name))
+    return FALSE;
+
+  out = fopen(expanded_path, "w+");
   if (out == NULL)
     return FALSE;
 
@@ -425,14 +442,13 @@ BOOL vf_copy_file(file_manager_t * f, const char *file_name)
     fwrite(&c, 1, 1, out);
     fread(&c, 1, 1, f->fm.fp);
   }
-
-  snprintf(f->fname, MAX_PATH_LEN - 1, "%s", file_name);
-  f->fname[MAX_PATH_LEN] = 0;
-
-  fclose(f->fm.fp);
   fclose(out);
 
-  f->fm.fp = fopen(f->fname, "r");
+  if (keep_newname) {
+    fclose(f->fm.fp);
+    strcpy(f->fname, expanded_path);
+    f->fm.fp = fopen(f->fname, "r");
+  }
 
   return TRUE;
 }

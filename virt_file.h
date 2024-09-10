@@ -45,7 +45,7 @@
 # endif
 # define FALSE 0
 
-#define MAX_PATH_LEN 255
+#define MAX_PATH_LEN 1024
 
 /****************
      TYPES
@@ -131,6 +131,7 @@ file_manager_t *vf_get_current_fm_from_ring(vf_ring_t *r);
 BOOL            vf_set_current_fm_from_ring(vf_ring_t *r, file_manager_t *fm);
 file_manager_t *vf_get_head_fm_from_ring(vf_ring_t *r);
 
+BOOL   vf_parse_path(char *out, const char *in);
 BOOL   vf_init(file_manager_t * f, const char *file_name);
 void   vf_term(file_manager_t * f);
 void   vf_stat(file_manager_t * f, vf_stat_t * s);
@@ -147,7 +148,7 @@ BOOL   vf_need_save(file_manager_t * f);
 char *vf_get_fname(file_manager_t * f);
 char *vf_get_fname_file(file_manager_t * f);
 BOOL   vf_create_file(file_manager_t * f, const char *file_name);
-BOOL   vf_copy_file(file_manager_t * f, const char *file_name);
+BOOL   vf_copy_file(file_manager_t * f, const char *file_name, BOOL keep_newname);
 off_t  vf_save(file_manager_t * f, int *complete);
 
 #endif /* __VIRT_FILE_H */

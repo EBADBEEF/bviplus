@@ -88,7 +88,7 @@ action_code_t action_undo(int count);
 action_code_t action_redo(int count);
 action_code_t action_save(void);
 action_code_t action_save_all(void);
-action_code_t action_save_as(char *name);
+action_code_t action_save_as(char *name, BOOL keep_newname);
 action_code_t action_quit(BOOL force);
 action_code_t action_quit_all(BOOL force);
 action_code_t action_blob_shift_right(int count);

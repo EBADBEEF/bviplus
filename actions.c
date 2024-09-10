@@ -1376,7 +1376,7 @@ action_code_t action_save_all(void)
   return error;
 }
 
-action_code_t action_save_as(char *name)
+action_code_t action_save_as(char *name, BOOL keep_newname)
 {
   action_code_t error = E_SUCCESS;
   int complete;
@@ -1393,7 +1393,7 @@ action_code_t action_save_as(char *name)
   }
   else
   {
-    status = vf_copy_file(current_file, name);
+    status = vf_copy_file(current_file, name, keep_newname);
     if (status == FALSE)
     {
       msg_box("Could not create \"%s\" (does the file already exist?)", name);
