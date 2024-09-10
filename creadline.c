@@ -128,8 +128,10 @@ char *creadline(const char *prompt, WINDOW *w, int y, int x, cmd_hist_t *history
         tmp_cmd.position = tmp_cmd.count;
         wmove(w, y, x+tmp_cmd.position+1);
         break;
+      case BVICTRL('c'):
       case ESC:
         return NULL;
+      case BVICTRL('?'):
       case BVICTRL('H'):
       case KEY_BACKSPACE:
         if (tmp_cmd.position == 0)

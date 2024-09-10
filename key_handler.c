@@ -450,7 +450,7 @@ action_code_t do_search(int c, cursor_t cursor)
     mvwprintw(window_list[WINDOW_STATUS], 0, 0, "%s", prompt);
     wrefresh(window_list[WINDOW_STATUS]);
     c = mgetch();
-    while (c != '/' && c != '\\' && c != ESC)
+    while (c != '/' && c != '\\' && c != ESC && c != BVICTRL('c'))
     {
       flash();
       c = mgetch();
@@ -781,7 +781,7 @@ off_t get_next_motion_addr(void)
   display_info.virtual_cursor_addr = -1;
 
   c = mgetch();
-  while (c != ESC)
+  while (c != ESC && c != BVICTRL('c'))
   {
     if (c >= '0' && c <= '9')
     {
@@ -882,6 +882,7 @@ off_t get_next_motion_addr(void)
       case '\\':
         do_search(c, CURSOR_VIRTUAL);
         return display_info.virtual_cursor_addr;
+      case BVICTRL('c'):
       case ESC:
         return display_info.cursor_addr;
       default:
@@ -955,7 +956,7 @@ void do_insert(int count, int c)
 
   page_start = display_info.page_start;
 
-  while (c2 != ESC)
+  while (c2 != ESC && c2 != BVICTRL('c'))
   {
     if ((offset + char_count + 1) > PAGE_SIZE)
       page_start += BYTES_PER_LINE;
@@ -1077,6 +1078,7 @@ void do_insert(int count, int c)
         break;
       case KEY_RESIZE:
         break;
+      case BVICTRL('c'):
       case ESC:
         break;
       default:
@@ -1236,7 +1238,7 @@ void do_replace(int count)
     update_panels();
     doupdate();
     c = mgetch();
-    if (c == ESC)
+    if (c == ESC || c == BVICTRL('c'))
       break;
 
     if (display_info.cursor_window == WINDOW_HEX)
@@ -1368,7 +1370,7 @@ void do_overwrite(int count)
 
   page_start = display_info.page_start;
 
-  while (c2 != ESC)
+  while (c2 != ESC && c2 != BVICTRL('c'))
   {
     if ((offset + char_count) > PAGE_SIZE)
       page_start += BYTES_PER_LINE;
@@ -1491,6 +1493,7 @@ void do_overwrite(int count)
         break;
       case KEY_RESIZE:
         break;
+      case BVICTRL('c'):
       case ESC:
         break;
       default:
@@ -1845,6 +1848,7 @@ void handle_key(int c)
     case '~':
       action_load_next_file();
       break;
+    case BVICTRL('c'):
     case ESC:
       if (action_visual_select_check())
       {

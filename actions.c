@@ -850,7 +850,7 @@ void *search_status_update_thread(void *search_data)
 
   sleep.tv_sec = 0;
   sleep.tv_nsec = 500000000;
-  while(search_data_p->current != search_data_p->end && c != ESC)
+  while(search_data_p->current != search_data_p->end && c != ESC && c != BVICTRL('c'))
   {
     if (search_data_p->start >= search_data_p->end) /* reverse search */
       complete = ((search_data_p->start - search_data_p->current) * 100) / (search_data_p->start - search_data_p->end);
@@ -864,14 +864,14 @@ void *search_status_update_thread(void *search_data)
     wattroff(search_window, A_STANDOUT);
     mvwprintw(search_window, 2, 1, "Press ESC to cancel search... %3d%%", complete);
     while ((c = mwgetch(search_window)) != ERR)
-      if (c == ESC)
+      if (c == ESC || c == BVICTRL('c'))
         break;
     wrefresh(search_window);
     nanosleep(&sleep, &slept);
     werase(search_window);
   }
 
-  if (c == ESC)
+  if (c == ESC || c == BVICTRL('c'))
     search_data_p->abort = 1;
 
   delwin(search_window);
