@@ -1902,6 +1902,7 @@ void handle_key(int c)
       jump_addr = -1;
       break;
     case KEY_RESIZE:
+    case BVICTRL('l'):
       action_do_resize();
       break;
     default:

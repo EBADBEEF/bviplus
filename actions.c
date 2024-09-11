@@ -1575,6 +1575,7 @@ action_code_t action_load_prev_file(void)
 action_code_t action_do_resize(void)
 {
   action_code_t error = E_SUCCESS;
+  clear();
   update_display_info();
   destroy_screen();
   create_screen();
