@@ -371,7 +371,8 @@ action_code_t cmd_parse(char *cbuff)
         print_screen(paddrsave);
       return error;
     }
-    if (strncmp(tok, "q", MAX_CMD_BUF) == 0)
+    if ((strncmp(tok, "q", MAX_CMD_BUF) == 0) ||
+        (strncmp(tok, "bd", MAX_CMD_BUF) == 0))
     {
       action_quit(FALSE);
       return error;
