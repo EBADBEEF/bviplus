@@ -1092,14 +1092,14 @@ void do_insert(int count, int c)
             else
             {
               memcpy(tmp2, ins_buf + char_count, user_prefs[GROUPING].value);
-              tmp[1] = HEX((tmp2[tmp_char_count] & 0xF0) >> 4);
-              tmp[0] = HEX((tmp2[tmp_char_count] & 0x0F));
+              tmp[0] = HEX((tmp2[tmp_char_count] & 0xF0) >> 4);
+              tmp[1] = HEX((tmp2[tmp_char_count] & 0x0F));
             }
           }
           else
           {
-            tmp[1] = HEX((tmp2[tmp_char_count] & 0xF0) >> 4);
-            tmp[0] = HEX((tmp2[tmp_char_count] & 0x0F));
+            tmp[0] = HEX((tmp2[tmp_char_count] & 0xF0) >> 4);
+            tmp[1] = HEX((tmp2[tmp_char_count] & 0x0F));
           }
         }
         break;
@@ -1508,14 +1508,14 @@ void do_overwrite(int count)
             else
             {
               memcpy(tmp2, rep_buf + char_count, user_prefs[GROUPING].value);
-              tmp[1] = HEX((tmp2[tmp_char_count] & 0xF0) >> 4);
-              tmp[0] = HEX((tmp2[tmp_char_count] & 0x0F));
+              tmp[0] = HEX((tmp2[tmp_char_count] & 0xF0) >> 4);
+              tmp[1] = HEX((tmp2[tmp_char_count] & 0x0F));
             }
           }
           else
           {
-            tmp[1] = HEX((tmp2[tmp_char_count] & 0xF0) >> 4);
-            tmp[0] = HEX((tmp2[tmp_char_count] & 0x0F));
+            tmp[0] = HEX((tmp2[tmp_char_count] & 0xF0) >> 4);
+            tmp[1] = HEX((tmp2[tmp_char_count] & 0x0F));
           }
         }
         break;
